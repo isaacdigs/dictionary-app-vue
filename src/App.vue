@@ -1,10 +1,10 @@
 <template>
   <div class="bg-gradient-to-bl from-slate-50 to-slate-100 w-screen h-screen flex justify-center items-center">
-  <div class="p-7 drop-shadow-2xl rounded bg-gradient-to-bl from-blue-500 to-indigo-700">
+  <div class="max-w-md p-7 drop-shadow-2xl rounded-[15px] bg-gradient-to-bl from-blue-500 to-indigo-700">
     <Header />
     <Searchbar @on-search="onSearch" />
     <MeaningSection :definition="currentDefinition" />
-    <p class="text-white text-center">* Hard-coded: cat, dog, elephant</p>
+    <p v-show="noDefinition" class="text-center text-slate-300 text-xl">No definition found</p>
   </div>
  </div>
 </template>
@@ -24,98 +24,6 @@ export default defineComponent({
   },
   data(): any {
     return{
-      definitions: [
-        {
-          word: 'cat',
-          phonetics: {
-            text: 'kæt',
-          },
-          meanings: [
-            {
-              partOfSpeech: 'noun',
-              definitions: [
-                {
-                  definition: 'a small domesticated carnivorous mammal with soft fur, a short snout, and retractile claws.',
-                  example: 'I love cats',
-                  synonyms: [],
-                  antonyms: [],
-                }
-              ]
-            },
-            {
-              partOfSpeech: 'verb',
-              definitions: [
-                {
-                  definition: 'to be in a state of complete bliss',
-                  example: 'I am happy',
-                  synonyms: [],
-                  antonyms: [],
-                }
-              ]
-            }
-          ],
-        },
-        {
-          word: 'dog',
-          phonetics: {
-            text: 'dɒg',
-          },
-          meanings: [
-            {
-              partOfSpeech: 'noun',
-              definitions: [
-                {
-                  definition: 'a domesticated carnivorous mammal that typically has a long snout, an acute sense of smell, and a barking, howling, or whining voice.',
-                  example: 'I love dogs',
-                  synonyms: [],
-                  antonyms: [],
-                }
-              ]
-            },
-            {
-              partOfSpeech: 'verb',
-              definitions: [
-                {
-                  definition: 'to be in a state of complete bliss',
-                  example: 'I am happy',
-                  synonyms: [],
-                  antonyms: [],
-                }
-              ]
-            }
-          ],
-        },
-        {
-          word: 'elephant',
-          phonetics: {
-            text: 'ɪlˈfɑːnt',
-          },
-          meanings: [
-            {
-              partOfSpeech: 'noun',
-              definitions: [
-                {
-                  definition: 'a large, long-necked mammal with a trunk and trunk-like trunk',
-                  example: 'I love elephants',
-                  synonyms: [],
-                  antonyms: [],
-                }
-              ]
-            },
-            {
-              partOfSpeech: 'verb',
-              definitions: [
-                {
-                  definition: 'to be in a state of complete bliss',
-                  example: 'I am happy',
-                  synonyms: [],
-                  antonyms: [],
-                }
-              ]
-            }
-          ],
-        },
-      ],
       currentDefinition: {
         word: '',
         phonetics: {
@@ -136,18 +44,35 @@ export default defineComponent({
         ]
       },
       searchText: '',
+      noDefinition: false,
     }
   },
   methods: {
-    getDefinition(word: string): any {
-      return this.definitions.find((definition: { word: string; }) => definition.word === word);
+    async getDefinition(word: string): Promise<any> {
+      //return this.definitions.find((definition: { word: string; }) => definition.word === word);
+      const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+      const data = await response.json();
+      return data[0];
     },
-    displayDefinition(definition: Object) {
-      this.currentDefinition = definition
-    },
-    onSearch(searchText) {
+    onSearch(searchText: any) {
       this.searchText = searchText
-      this.currentDefinition = this.getDefinition(this.searchText)
+      const queriedDefinition = this.getDefinition(this.searchText);
+      queriedDefinition.then(
+        (definition: any) => {
+          const {word, phonetics, meanings } = definition;
+          this.currentDefinition = {
+            word,
+            phonetics,
+            meanings,
+          },
+          this.noDefinition = false;
+        }
+      ).catch(
+        (error: any) => {
+          console.log(error);
+          this.noDefinition = true;
+        }
+      )
     },
   },
 })
