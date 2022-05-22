@@ -1,10 +1,17 @@
 <template>
   <div class="bg-gradient-to-bl from-slate-50 to-slate-100 w-screen h-screen flex justify-center items-center">
-  <div class="max-w-md p-7 drop-shadow-2xl rounded-[15px] bg-gradient-to-bl from-blue-500 to-indigo-700">
+  <div class="flex flex-col items-center sm:max-w-md w-full h-full sm:h-fit p-7 drop-shadow-2xl sm:rounded-[15px] bg-gradient-to-bl from-blue-500 to-indigo-700">
     <Header />
     <Searchbar @on-search="onSearch" />
     <MeaningSection :definition="currentDefinition" />
-    <p v-show="noDefinition" class="text-center text-slate-300 text-xl">No definition found</p>
+    <p v-show="noDefinition" class="text-center text-slate-300 text-xl mb-7">No definition found</p>
+    <div class="absolute bottom-0 mb-2">
+        <span>
+          <img src="./assets/github.png" class="h-7 w-7 invert inline-block mr-3" />   
+        </span>
+        <span class="text-white">Built by : </span>
+        <a href="https://github.com/isaacdigs" class="text-white underline">Isaac Digs</a>
+    </div>
   </div>
  </div>
 </template>
@@ -71,6 +78,11 @@ export default defineComponent({
         (error: any) => {
           console.log(error);
           this.noDefinition = true;
+          this.currentDefinition = {
+            word: '',
+            phonetics: {},
+            meanings: [],
+          }
         }
       )
     },

@@ -8,7 +8,7 @@
 </script>
 
 <template>
-    <div class="scrollbar p-3 bg-slate-50 mt-5 shadow-inner overflow-y-scroll h-[240px] w-full border">
+    <div class="scrollbar p-3 bg-slate-50 my-5 shadow-inner overflow-y-scroll sm:h-[240px] min-h-[150px] w-full border">
         <span class="font-extrabold text-indigo-900 text-2xl">{{definition.word}}</span>
         <span class="text-gray-400 text-sm ml-2">{{definition.phonetics.text}}</span>
         <audio />
@@ -17,7 +17,7 @@
             <span>{{definition.word.length !== 0 ? index + 1 + '.' : ''}}</span>
             <span class="ml-2 text-indigo-500">{{meaning.partOfSpeech}}</span>
             <p>{{meaning.definitions[0].definition}}</p>
-            <p class="text-slate-400 italic">{{definition.word.length !==0?'"' + meaning.definitions[0].example + '"': ''}}</p>
+            <p class="text-slate-400 italic">{{meaning.definitions[0].example ?'"' + meaning.definitions[0].example + '"': ''}}</p>
             <br />
         </div>
     </div>
