@@ -18,7 +18,8 @@
             }
         },
         methods: {
-            onSearch() {
+            onSearch(e) {
+                e.preventDefault();
                 this.$emit('on-search', this.searchText);
             },
         },
